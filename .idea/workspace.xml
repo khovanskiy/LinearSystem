@@ -48,10 +48,11 @@
       <file leaf-file-name="GeneralActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/example/LinearSystem/GeneralActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="3.0421941" vertical-offset="3332" max-vertical-offset="5060">
-              <caret line="260" column="49" selection-start-line="260" selection-start-column="48" selection-end-line="260" selection-end-column="48" />
+            <state vertical-scroll-proportion="0.39662448" vertical-offset="4652" max-vertical-offset="5324">
+              <caret line="317" column="10" selection-start-line="317" selection-start-column="10" selection-end-line="317" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="method#jacobiMethod#0;class#GeneralActivity#0" expanded="false" />
                 <element signature="method#gaussMethod#0;class#GeneralActivity#0" expanded="false" />
               </folding>
             </state>
@@ -413,8 +414,8 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43541202" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43541202" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -459,6 +460,7 @@
           <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#jacobiMethod#0;class#GeneralActivity#0" expanded="false" />
             <element signature="method#gaussMethod#0;class#GeneralActivity#0" expanded="false" />
           </folding>
         </state>
@@ -498,10 +500,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/example/LinearSystem/GeneralActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.0421941" vertical-offset="3332" max-vertical-offset="5060">
-          <caret line="260" column="49" selection-start-line="260" selection-start-column="48" selection-end-line="260" selection-end-column="48" />
+        <state vertical-scroll-proportion="0.39662448" vertical-offset="4652" max-vertical-offset="5324">
+          <caret line="317" column="10" selection-start-line="317" selection-start-column="10" selection-end-line="317" selection-end-column="10" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#jacobiMethod#0;class#GeneralActivity#0" expanded="false" />
             <element signature="method#gaussMethod#0;class#GeneralActivity#0" expanded="false" />
           </folding>
         </state>

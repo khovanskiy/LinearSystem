@@ -139,8 +139,7 @@ public class GeneralActivity extends Activity {
         return state[current];
     }
 
-    private double[] jacobiMethod(double[][] matrix, double[] b, long maxIterations, double epsilon) {
-        double[][] a = copyMatrix(matrix);
+    private double[] jacobiMethod(double[][] a, double[] b, long maxIterations, double epsilon) {
         int n = b.length;
 
         double[][] alpha = new double[n][n];
@@ -241,6 +240,71 @@ public class GeneralActivity extends Activity {
         return solution;
     }
 
+    private double[] SORMethod(double[][] matrix, double[] b, long maxIterations, double epsilon) {
+        double[][] a = copyMatrix(matrix);
+        int n = b.length;
+
+        double[][] b1 = new double[n][n];
+        double[][] b2 = new double[n][n];
+        double[] d = new double[n];
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i > j) {
+                    b1[i][j] = -a[i][j] / a[i][i];
+                } else if (i < j) {
+                    b2[i][j] = -a[i][j] / a[i][i];
+                }
+            }
+            d[i] = b[i] / a[i][i];
+        }
+
+        /*double q1 = matrixNorm(b1);
+        double q2 = matrixNorm(b2);
+        double q = (1 - q1) / q2;
+        double major = epsilon * q;
+        if (q1 + q2 >= 1) {
+            System.out.print("Inconsistent: ||B1|| + ||B2|| >= 1 \n");
+        } else {
+            System.out.format("Q = %10f \n", q);
+        }*/
+
+        double omega = 0.9;
+
+        int prev = 0;
+        double[][] x = new double[2][n];
+        for (int i = 0; i < n; ++i) {
+            x[prev][i] = d[i];
+        }
+
+        for (long k = 0; k < maxIterations; ++k) {
+            int next = (prev + 1) % 2;
+            for (int i = 0; i < n; ++i) {
+                double value = (1 - omega) * x[prev][i] + d[i];
+                for (int j = 0; j < i; ++j) {
+                    value += b1[i][j] * x[next][j];
+                }
+                for (int j = i + 1; j < n; ++j) {
+                    value += b2[i][j] * x[prev][j];
+                }
+                x[next][i] = omega * value;
+            }
+            /*double max = -1;
+            for (int i = 0; i < n; ++i) {
+                double t = Math.abs(state[next][i] - state[current][i]);
+                if (max < t) {
+                    max = t;
+                }
+            }*/
+            prev = next;
+            /*if (max < major) {
+                break;
+            }*/
+        }
+
+        return x[prev];
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -254,14 +318,16 @@ public class GeneralActivity extends Activity {
         //diagonalFill(matrix, 0, 10);
         //randomFill(matrix, 0, 10);
         //hilbertFill(matrix);
-        System.out.println("# Matrix #");
+        System.out.println("=== Matrix ===");
         printMatrix(matrix);
-        System.out.println("# Gauss method #");
+        System.out.println("=== Gauss method ===");
         printArray(gaussMethod(matrix, b));
-        System.out.println("# Jacobi method #");
+        System.out.println("=== Jacobi method ===");
         printArray(jacobiMethod(matrix, b, 1000000L, 0.0001));
-        System.out.println("# Seidel method #");
+        System.out.println("=== Seidel method ===");
         printArray(seidelMethod(matrix, b, 1000000L, 0.0001));
+        System.out.println("=== Method of successive over-relaxation ===");
+        printArray(SORMethod(matrix, b, 1000000L, 0.0001));
     }
 
 }
