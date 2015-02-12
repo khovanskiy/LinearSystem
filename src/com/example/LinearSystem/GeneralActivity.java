@@ -158,10 +158,25 @@ public class GeneralActivity extends Activity {
         double q = matrixNorm(alpha);
 
         double major = epsilon * (1 - q) / q;
-
+        boolean dominance = true;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (Math.abs(alpha[i][j]) >= Math.abs(alpha[i][i])) {
+                    dominance = false;
+                    break;
+                }
+            }
+            if (!dominance) {
+                break;
+            }
+        }
         if (q >= 1) {
             System.out.format("Inconsistent: Q = %10f >= 1\n", q);
-        } else {
+        }
+        if (!dominance) {
+            System.out.format("No diagonal dominance\n");
+        }
+        if (dominance && q < 1) {
             System.out.format("Q = %10f\n", q);
         }
 
