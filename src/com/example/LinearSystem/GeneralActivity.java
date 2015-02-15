@@ -1,7 +1,13 @@
 package com.example.LinearSystem;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -10,15 +16,29 @@ public class GeneralActivity extends Activity {
 
     private static Random random = new Random();
 
-    private static void randomFill(double[][] matrix, int min, int max) {
+    private static void solutionsFill(double[][] matrix, double[] b, int min, int max) {
+        int[] solutions = new int[matrix.length];
+        for (int i = 0; i < solutions.length; ++i) {
+            solutions[i] = random.nextInt(max - min + 1) + min;
+        }
+        for (int i = 0; i < matrix.length; ++i) {
+            b[i] = 0;
+            for (int j = 0; j < matrix[i].length; ++j) {
+                b[i] += matrix[i][j] * solutions[j];
+            }
+        }
+    }
+
+    private static void randomFill(double[][] matrix, double[] b, int min, int max) {
         for (int i = 0; i < matrix.length; ++i) {
             for (int j = 0; j < matrix[i].length; ++j) {
                 matrix[i][j] = random.nextInt(max - min + 1) + min;
             }
         }
+        solutionsFill(matrix, b, min, max);
     }
 
-    private static void diagonalFill(double[][] matrix, int min, int max) {
+    private static void diagonalFill(double[][] matrix, double[] b, int min, int max) {
         for (int i = 0; i < matrix.length; ++i) {
             for (int j = 0; j < matrix[i].length; ++j) {
                 if (i == j) {
@@ -28,14 +48,16 @@ public class GeneralActivity extends Activity {
                 }
             }
         }
+        solutionsFill(matrix, b, min, max);
     }
 
-    private static void hilbertFill(double[][] matrix) {
+    private static void hilbertFill(double[][] matrix, double[] b, int min, int max) {
         for (int i = 0; i < matrix.length; ++i) {
             for (int j = 0; j < matrix[i].length; ++j) {
                 matrix[i][j] = 1.0 / (i + j + 1.0);
             }
         }
+        solutionsFill(matrix, b, min, max);
     }
 
     private static double[][] copyMatrix(double[][] matrix) {
@@ -320,15 +342,109 @@ public class GeneralActivity extends Activity {
         return x[prev];
     }
 
+    /*private class MatrixAdapter extends BaseAdapter {
+
+        private double[][] matrix;
+
+        public MatrixAdapter(double[][] matrix) {
+            this.matrix = matrix;
+        }
+
+        @Override
+        public int getCount() {
+            return this.matrix.length * this.matrix.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return this.matrix[position / matrix.length][position % matrix.length];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.element, parent, false);
+            TextView text = (TextView) view.findViewById(R.id.textView);
+            text.setText(this.matrix[position / matrix.length][position % matrix.length] + "");
+            return view;
+        }
+    }*/
+
+    private void updateView(double[][] matrix, double[] vector) {
+        int n = vector.length;
+        LinearLayout view = (LinearLayout) findViewById(R.id.lines);
+        view.removeAllViewsInLayout();
+        for (int i = 0; i < n; ++i) {
+            LinearLayout line = new LinearLayout(this);
+            line.setOrientation(LinearLayout.HORIZONTAL);
+            line.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+            line.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            for (int j = 0; j < n; ++j) {
+                TextView text = new TextView(this);
+                text.setText(String.format("%.02f", matrix[i][j]));
+                text.setTextColor(Color.parseColor("#ffffffff"));
+                text.setLayoutParams(new TableLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                line.addView(text);
+            }
+            TextView text = new TextView(this);
+            text.setText(String.format("%.02f", vector[i]));
+            text.setTextColor(Color.parseColor("#ff0099cc"));
+            text.setLayoutParams(new TableLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+            line.addView(text);
+            view.addView(line);
+        }
+        view.invalidate();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        int n = 3;
-        double[][] matrix = {{2, 1, 1}, {1, -1, 0}, {3, -1, 2}};
-        double[] b = {2, -2, 2};
+        final int n = 5;
+        final int min = -n * 10;
+        final int max = n * 10;
+        final double epsilon = 0.0001;
+        final long maxIterations = 1000000L;
 
+        final double[][] matrix = new double[n][n];
+        final double[] b = new double[n];
+
+        diagonalFill(matrix, b, 1, 1);
+        updateView(matrix, b);
+        //final MatrixAdapter adapter = new MatrixAdapter(matrix);
+
+        Button randomButton = (Button) findViewById(R.id.randomButton);
+        randomButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                randomFill(matrix, b, min, max);
+                updateView(matrix, b);
+            }
+        });
+
+        Button diagonalButton = (Button) findViewById(R.id.diagonalButton);
+        diagonalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                diagonalFill(matrix, b, min, max);
+                updateView(matrix, b);
+            }
+        });
+
+        Button hilbertButton = (Button) findViewById(R.id.hilbertButton);
+        hilbertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hilbertFill(matrix, b, min, max);
+                updateView(matrix, b);
+            }
+        });
         //printMatrix(matrix);
         //diagonalFill(matrix, 0, 10);
         //randomFill(matrix, 0, 10);
@@ -338,11 +454,11 @@ public class GeneralActivity extends Activity {
         System.out.println("=== Gauss method ===");
         printArray(gaussMethod(matrix, b));
         System.out.println("=== Jacobi method ===");
-        printArray(jacobiMethod(matrix, b, 1000000L, 0.0001));
+        printArray(jacobiMethod(matrix, b, maxIterations, epsilon));
         System.out.println("=== Seidel method ===");
-        printArray(seidelMethod(matrix, b, 1000000L, 0.0001));
+        printArray(seidelMethod(matrix, b, maxIterations, epsilon));
         System.out.println("=== Method of successive over-relaxation ===");
-        printArray(SORMethod(matrix, b, 1000000L, 0.0001));
+        printArray(SORMethod(matrix, b, maxIterations, epsilon));
     }
 
 }
