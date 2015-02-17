@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ApplicationTheme" parent="android:Widget.Holo">
+        <item name="android:actionBarStyle">@style/GeneralActionBar</item>
+    </style>
+    <style name="GeneralActionBar" parent="android:Widget.Holo.ActionBar.Solid">
+        <item name="android:background">#ff669900</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:icon">@android:color/transparent</item>
+    </style>
+</resources>
