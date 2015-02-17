@@ -4,6 +4,31 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:baselineAligned="false" android:id="@+id/linearLayout">
+        <LinearLayout android:orientation="vertical" android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:layout_weight="1">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceLarge" android:text="Minimum"
+                      android:textColor="@android:color/holo_orange_dark" android:padding="10dp"
+                      android:singleLine="true" android:gravity="center"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:ems="10" android:id="@+id/rangeMin"
+                      android:autoText="false" android:hint="Epsilon" android:text="-50"
+                      android:textColor="@android:color/white" android:gravity="center" android:inputType="number"/>
+        </LinearLayout>
+        <LinearLayout android:orientation="vertical" android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:layout_weight="1">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceLarge" android:text="Maximum"
+                      android:textColor="@android:color/holo_orange_dark" android:padding="10dp"
+                      android:singleLine="true" android:gravity="center"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:ems="10"
+                      android:autoText="false" android:text="50"
+                      android:inputType="number" android:textColor="@android:color/white" android:gravity="center"
+                      android:id="@+id/rangeMax"/>
+        </LinearLayout>
+    </LinearLayout>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
@@ -26,8 +51,88 @@
         <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="Dominance"
+                android:id="@+id/diagonalDominanceButton" android:layout_weight="1"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:text="Hilbert"
                 android:id="@+id/hilbertButton" android:layout_weight="1"/>
     </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:baselineAligned="false">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="1">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Epsilon"
+                    android:textColor="@android:color/holo_orange_dark" android:padding="10dp"
+                    android:singleLine="true" android:gravity="center"/>
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/epsilon" android:autoText="false"
+                    android:hint="Epsilon" android:text="0.0001" android:textColor="@android:color/white"
+                    android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="1">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceLarge" android:text="Max iterations"
+                      android:textColor="@android:color/holo_orange_dark" android:padding="10dp"
+                      android:singleLine="true" android:gravity="center"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:ems="10" android:id="@+id/maxIterations" android:autoText="false"
+                      android:text="100000" android:inputType="number"
+                      android:textColor="@android:color/white" android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent" android:layout_weight="1">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceLarge" android:text="Relaxation"
+                      android:textColor="@android:color/holo_orange_dark" android:padding="10dp"
+                      android:singleLine="true" android:gravity="center"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"
+                      android:ems="10" android:id="@+id/relaxation" android:autoText="false"
+                      android:text="0.9" android:textColor="@android:color/white"
+                      android:gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Run"
+                android:id="@+id/runButton" android:layout_weight="2"
+                android:background="@android:color/holo_green_dark"/>
+        <ProgressBar
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/progressBar" android:layout_weight="1" android:layout_gravity="center"
+                android:visibility="invisible"/>
+    </LinearLayout>
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/methods"/>
 </LinearLayout>
 
