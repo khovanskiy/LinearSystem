@@ -206,7 +206,7 @@ public class GeneralActivity extends Activity {
 
             /** Check consistency **/
             if (!zeidelMod) {
-                double q = new Matrix(b1).getNorm();
+                double q = new Matrix(b2).getNorm();
 
                 major = epsilon * (1 - q) / q;
 
