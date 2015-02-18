@@ -28,17 +28,12 @@ public class GeneralActivity extends Activity {
     private static class Matrix implements Cloneable {
         private int n;
         private double[][] a;
-        private double[] multiplier;
 
         private double norm = -1;
 
         public Matrix(int size) {
             n = size;
             a = new double[n][n];
-            multiplier = new double[n];
-            for (int i = 0; i < n; i++) {
-                multiplier[i] = 1;
-            }
         }
 
         public Matrix(double[][] m) {
@@ -192,10 +187,15 @@ public class GeneralActivity extends Activity {
             double[] d = new double[n];
 
             for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < n; ++j) {
-                    if (i != j && (!zeidelMod || i > j)) {
+                for (int j = 0; j < i; j++) {
+                    b2[i][j] = -a[i][j] / a[i][i];
+                }
+                if (zeidelMod) {
+                    for (int j = i + 1; j < n; j++) {
                         b1[i][j] = -a[i][j] / a[i][i];
-                    } else if (i < j) {
+                    }
+                } else {
+                    for (int j = i + 1; j < n; j++) {
                         b2[i][j] = -a[i][j] / a[i][i];
                     }
                 }
@@ -211,7 +211,7 @@ public class GeneralActivity extends Activity {
                 major = epsilon * (1 - q) / q;
 
                 if (q >= 1) {
-                    throw new InconsistentInputException(String.format("Inconsistent: Q = %10f >= 1\n", q));
+                    throw new InconsistentInputException(String.format("Inconsistent: ||B|| = %10f >= 1\n", q));
                 }
                 if (!isDiagonalDominant()) {
                     throw new InconsistentInputException("No diagonal dominance\n");
@@ -230,22 +230,19 @@ public class GeneralActivity extends Activity {
             int prev = 0;
             double[][] x = new double[2][n];
             for (int i = 0; i < n; ++i) {
-                x[prev][i] = d[i];
+                x[prev][i] = random.nextDouble();
             }
 
             for (long k = 0; k < maxIterations; ++k) {
                 int next = (prev + 1) % 2;
                 for (int i = 0; i < n; ++i) {
                     double value = d[i];
-                    for (int j = 0; j < i; ++j) {
-                        value += b1[i][j] * x[next][j];
-                    }
-                    for (int j = i + 1; j < n; ++j) {
-                        value += b2[i][j] * x[prev][j];
+                    for (int j = 0; j < n; ++j) {
+                        value += b1[i][j] * x[next][j] + b2[i][j] * x[prev][j];
                     }
                     x[next][i] = value;
                 }
-                double max = Math.abs(x[next][0] = x[prev][0]);
+                double max = Math.abs(x[next][0] - x[prev][0]);
                 for (int i = 0; i < n; i++) {
                     x[next][i] = relaxation * x[next][i] + (1 - relaxation) * x[prev][i];
                     if (Math.abs(x[next][i] - x[prev][i]) > max) {
@@ -350,6 +347,7 @@ public class GeneralActivity extends Activity {
             for (int t = 0; t < n * r; t++) {
                 double[] Ap = m.transform(p);
                 double Apxp = scalarProduct(Ap, p);
+                if (Apxp == 0) break;
                 double[] g = m.g(b, x);
                 double alpha = -scalarProduct(g, p) / Apxp;
                 for (int i = 0; i < n; i++) {
@@ -505,7 +503,7 @@ public class GeneralActivity extends Activity {
                 return null;
             }
             try {
-                publishProgress(new MethodResult("Conjugate gradients", matrix.conjugateGradientsMethod(vector, 100)));
+                publishProgress(new MethodResult("Conjugate gradients", matrix.conjugateGradientsMethod(vector, 1000)));
             } catch (InconsistentInputException e) {
                 publishProgress(new MethodResult("Conjugate gradients", e.getMessage()));
             }
@@ -635,6 +633,7 @@ public class GeneralActivity extends Activity {
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateView(matrix, b);
                 execute(matrix, b);
             }
         });
