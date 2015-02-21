@@ -219,9 +219,11 @@ public class GeneralActivity extends Activity {
             } else {
                 double q1 = new Matrix(b1).getNorm();
                 double q2 = new Matrix(b2).getNorm();
-                double q = (1 - q1) / q2;
-                major = epsilon * q;
-
+                if (q2 != 0) {
+                    major = epsilon * (1 - q1) / q2;
+                } else {
+                    major = epsilon;
+                }
                 if (q1 + q2 >= 1) {
                     throw new InconsistentInputException("Inconsistent: ||B1|| + ||B2|| >= 1 \n");
                 }
