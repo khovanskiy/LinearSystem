@@ -180,7 +180,7 @@ public class GeneralActivity extends Activity {
         }
 
         public double[] jacobiMethod(double[] b, long maxIterations, double epsilon,
-                                     boolean zeidelMod, double relaxation) throws InconsistentInputException {
+                                     boolean zeidelMod, double relaxation, boolean check) throws InconsistentInputException {
             double[][] b1 = new double[n][n];
             double[][] b2 = new double[n][n];
 
@@ -209,12 +209,13 @@ public class GeneralActivity extends Activity {
                 double q = new Matrix(b2).getNorm();
 
                 major = epsilon * (1 - q) / q;
-
-                if (q >= 1) {
-                    throw new InconsistentInputException(String.format("Inconsistent: ||B|| = %10f >= 1\n", q));
-                }
-                if (!isDiagonalDominant()) {
-                    throw new InconsistentInputException("No diagonal dominance\n");
+                if (check) {
+                    if (q >= 1) {
+                        throw new InconsistentInputException(String.format("Inconsistent: ||B|| = %10f >= 1\n", q));
+                    }
+                    if (!isDiagonalDominant()) {
+                        throw new InconsistentInputException("No diagonal dominance\n");
+                    }
                 }
             } else {
                 double q1 = new Matrix(b1).getNorm();
@@ -224,8 +225,10 @@ public class GeneralActivity extends Activity {
                 } else {
                     major = epsilon;
                 }
-                if (q1 + q2 >= 1) {
-                    throw new InconsistentInputException("Inconsistent: ||B1|| + ||B2|| >= 1 \n");
+                if (check) {
+                    if (q1 + q2 >= 1) {
+                        throw new InconsistentInputException("Inconsistent: ||B1|| + ||B2|| >= 1 \n");
+                    }
                 }
             }
 
@@ -393,6 +396,9 @@ public class GeneralActivity extends Activity {
         TextView relaxationTextView = (TextView) findViewById(R.id.relaxation);
         relaxation = Double.parseDouble(relaxationTextView.getText().toString());
 
+        CheckBox consistencyCheckBox = (CheckBox) findViewById(R.id.main_checkBox);
+        check = consistencyCheckBox.isChecked();
+
         int n = vector.length;
         LinearLayout view = (LinearLayout) findViewById(R.id.lines);
         view.removeAllViewsInLayout();
@@ -457,10 +463,12 @@ public class GeneralActivity extends Activity {
     private class Runner extends AsyncTask<Void, MethodResult, Void> {
         private Matrix matrix;
         private double[] vector;
+        private boolean check;
 
-        public Runner(Matrix matrix, double[] vector) {
+        public Runner(Matrix matrix, double[] vector, boolean check) {
             this.matrix = matrix.clone();
             this.vector = vector.clone();
+            this.check = check;
         }
 
         @Override
@@ -481,7 +489,7 @@ public class GeneralActivity extends Activity {
                 return null;
             }
             try {
-                publishProgress(new MethodResult("Jacobi", matrix.jacobiMethod(vector, maxIterations, epsilon, false, 1)));
+                publishProgress(new MethodResult("Jacobi", matrix.jacobiMethod(vector, maxIterations, epsilon, false, 1, check)));
             } catch (InconsistentInputException e) {
                 publishProgress(new MethodResult("Jacobi", e.getMessage()));
             }
@@ -489,7 +497,7 @@ public class GeneralActivity extends Activity {
                 return null;
             }
             try {
-                publishProgress(new MethodResult("Seidel", matrix.jacobiMethod(vector, maxIterations, epsilon, true, 1)));
+                publishProgress(new MethodResult("Seidel", matrix.jacobiMethod(vector, maxIterations, epsilon, true, 1, check)));
             } catch (InconsistentInputException e) {
                 publishProgress(new MethodResult("Seidel", e.getMessage()));
             }
@@ -497,7 +505,7 @@ public class GeneralActivity extends Activity {
                 return null;
             }
             try {
-                publishProgress(new MethodResult("Successive over-relaxation", matrix.jacobiMethod(vector, maxIterations, epsilon, true, relaxation)));
+                publishProgress(new MethodResult("Successive over-relaxation", matrix.jacobiMethod(vector, maxIterations, epsilon, true, relaxation, check)));
             } catch (InconsistentInputException e) {
                 publishProgress(new MethodResult("Successive over-relaxation", e.getMessage()));
             }
@@ -565,12 +573,12 @@ public class GeneralActivity extends Activity {
         }
     }
 
-    private void execute(Matrix matrix, double[] vector) {
+    private void execute(Matrix matrix, double[] vector, boolean check) {
         synchronized (this) {
             if (runner != null) {
                 runner.cancel(true);
             }
-            runner = new Runner(matrix, vector);
+            runner = new Runner(matrix, vector, check);
             runner.execute();
         }
     }
@@ -581,6 +589,7 @@ public class GeneralActivity extends Activity {
     private double epsilon = 0.0001;
     private long maxIterations = 100000L;
     private double relaxation = 0.9;
+    private boolean check = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -636,7 +645,7 @@ public class GeneralActivity extends Activity {
             @Override
             public void onClick(View v) {
                 updateView(matrix, b);
-                execute(matrix, b);
+                execute(matrix, b, check);
             }
         });
         /*System.out.println("=== Matrix ===");
